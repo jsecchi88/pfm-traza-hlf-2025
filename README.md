@@ -85,6 +85,37 @@ Cada actor tiene permisos específicos y todas las acciones quedan registradas d
 
 ---
 
+## Funcionalidades Clave
+
+### 1. Gestión de Identidad
+- Cada participante se identifica mediante certificados X.509
+- El MSP (Membership Service Provider) gestiona las identidades
+- Control de acceso basado en roles mediante políticas de endorsement
+- Autenticación mediante Fabric CA
+
+### 2. Registro de Activos
+- **Materias Primas:**
+  - Registros únicos para cada lote de materia prima
+  - Metadata asociada (origen, características, certificaciones)
+  - Trazabilidad desde el origen
+- **Productos:**
+  - Registros únicos para productos terminados
+  - Vinculación con registros de materias primas utilizadas
+  - Información del proceso de transformación
+
+### 3. Sistema de Transferencias
+- Transferencias direccionales según rol
+- Sistema de aceptación/rechazo de transferencias
+- Validación mediante políticas de endorsement
+
+### 4. Trazabilidad
+- Registro completo del ciclo de vida
+- Visualización de la cadena de custodia
+- Verificación de autenticidad
+- Historia completa de transferencias
+
+---
+
 ## Instrucciones de despliegue
 
 1. **Clona el repositorio:**
