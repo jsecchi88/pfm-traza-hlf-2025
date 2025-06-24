@@ -2,12 +2,49 @@
 
 ## Tabla de actores y permisos
 
-| Actor                  | Rol en la red                                 | Permisos principales                                                      |
-|------------------------|-----------------------------------------------|--------------------------------------------------------------------------|
-| Viticultor             | Cultiva las uvas                              | Registrar cosecha, datos de parcela, insumos utilizados                   |
-| Bodega                 | Elabora el vino                               | Registrar producción, análisis químicos, embotellado                      |
-| Transportista          | Moviliza productos entre actores              | Registrar condiciones de transporte (IoT), ubicaciones                    |
-| Distribuidor           | Compra y redistribuye botellas                | Confirmar recepción, crear lotes de distribución                          |
-| Minorista              | Punto de venta final                          | Registrar disponibilidad, confirmar trazabilidad para consumidor           |
-| Regulador/Certificador | Entidad oficial o consejo regulador           | Verificar autenticidad, registrar certificados de calidad o DO            |
-| Consumidor (lectura)   | Escanea QR o accede desde app móvil           | Solo lectura de datos trazables de una botella específica                 |
+<table>
+  <thead>
+    <tr>
+      <th>Actor</th>
+      <th>Rol en la red</th>
+      <th>Permisos principales</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Viticultor</strong></td>
+      <td>Cultiva las uvas</td>
+      <td>Registrar cosecha, datos de parcela, insumos utilizados</td>
+    </tr>
+    <tr>
+      <td><strong>Bodega</strong></td>
+      <td>Elabora el vino</td>
+      <td>Registrar producción, análisis químicos, embotellado</td>
+    </tr>
+    <tr>
+      <td><strong>Transportista</strong></td>
+      <td>Moviliza productos entre actores</td>
+      <td>Registrar condiciones de transporte (IoT), ubicaciones</td>
+    </tr>
+    <tr>
+      <td><strong>Distribuidor</strong></td>
+      <td>Compra y redistribuye botellas</td>
+      <td>Confirmar recepción, crear lotes de distribución</td>
+    </tr>
+    <tr>
+      <td><strong>Minorista</strong></td>
+      <td>Punto de venta final</td>
+      <td>Registrar disponibilidad, confirmar trazabilidad para consumidor</td>
+    </tr>
+    <tr>
+      <td><strong>Regulador/Certificador</strong></td>
+      <td>Entidad oficial o consejo regulador</td>
+      <td>Verificar autenticidad, registrar certificados de calidad o DO</td>
+    </tr>
+    <tr>
+      <td><strong>Consumidor (lectura)</strong></td>
+      <td>Escanea QR o accede desde app móvil</td>
+      <td>Solo lectura de datos trazables de una botella específica</td>
+    </tr>
+  </tbody>
+</table>
