@@ -1,0 +1,16 @@
+{
+  "node": {
+    "4070d09d683663a87ab0ff99846d4dc3d4a86be052": {
+      "workers": {
+        "app/(app)/analyzer/page": {
+          "moduleId": "[project]/.next-internal/server/app/(app)/analyzer/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/ai/flows/supply-chain-analyzer.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(app)/analyzer/page": "action-browser"
+      }
+    }
+  },
+  "edge": {}
+}

@@ -1,0 +1,8 @@
+{
+  "/(app)/assets/my-assets/page": "app/(app)/assets/my-assets/page.js",
+  "/(app)/assets/register-raw/page": "app/(app)/assets/register-raw/page.js",
+  "/(app)/dashboard/page": "app/(app)/dashboard/page.js",
+  "/(app)/transfers/view/page": "app/(app)/transfers/view/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js"
+}
