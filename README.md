@@ -9,13 +9,9 @@ Plataforma descentralizada basada en Hyperledger Fabric que permite la trazabili
 ```mermaid
 graph TD
     A[Viticultor] -->|Entrega uvas| B[Bodega]
-    B -->|Elabora vino| C[Distribuidor]
-    C -->|Distribuye| D[Minorista]
+    B -->|Elabora y entrega| D[Minorista]
     D -->|Vende| E[Consumidor]
-    B -->|Solicita transporte| F[Transportista]
-    F -->|Entrega producto| C
     G[Regulador/Certificador] -.->|Verifica y certifica| B
-    G -.->|Verifica| C
     G -.->|Verifica| D
     E -->|Consulta trazabilidad| D
 ```
@@ -43,16 +39,7 @@ graph TD
       <td>Elabora el vino</td>
       <td>Registrar producción, análisis químicos, embotellado</td>
     </tr>
-    <tr>
-      <td><strong>Transportista</strong></td>
-      <td>Moviliza productos entre actores</td>
-      <td>Registrar condiciones de transporte (IoT), ubicaciones</td>
-    </tr>
-    <tr>
-      <td><strong>Distribuidor</strong></td>
-      <td>Compra y redistribuye botellas</td>
-      <td>Confirmar recepción, crear lotes de distribución</td>
-    </tr>
+
     <tr>
       <td><strong>Minorista</strong></td>
       <td>Punto de venta final</td>

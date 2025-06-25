@@ -8,16 +8,19 @@ import { AccessControl } from '../utils/accessControl';
 import { TraceabilityUtils } from '../utils/traceabilityUtils';
 import { TransferUtils } from '../utils/transferUtils';
 
-@Info({ title: 'ViticultorContract', description: 'Contrato para gestión de operaciones del viticultor' })
+@Info({ title: 'ViticultorContract', description: 'Contrato para gestión de operaciones del viticultor: registro de cosechas y transferencias exclusivamente a bodegas' })
 export class ViticultorContract extends BaseContract {
     
-    // Registrar información de cosecha
+    /**
+     * Registrar información de cosecha - Punto de entrada principal de las cosechas al sistema
+     * Los viticultores son los responsables del registro inicial de las cosechas
+     * Documenta fecha, variedad de uva, cantidad en kg o toneladas y propiedades específicas
+     */
     @Transaction()
     @Returns('boolean')
     public async registrarCosecha(
         ctx: Context, 
         cosechaId: string, 
-        parcelaId: string, 
         fecha: string, 
         variedadUva: string, 
         cantidadKg: string,
@@ -31,17 +34,37 @@ export class ViticultorContract extends BaseContract {
             throw new Error(`La cosecha ${cosechaId} ya existe`);
         }
 
+        // Verificar formato de datos
+        try {
+            const props = JSON.parse(propiedades);
+            const cantidad = parseFloat(cantidadKg);
+            
+            if (isNaN(cantidad) || cantidad <= 0) {
+                throw new Error('La cantidad debe ser un número positivo');
+            }
+            
+            // Verificar que la fecha tenga un formato válido
+            if (isNaN(Date.parse(fecha))) {
+                throw new Error('La fecha proporcionada no tiene un formato válido');
+            }
+        } catch (error: any) {
+            if (error.message.includes('JSON')) {
+                throw new Error('El formato de las propiedades no es un JSON válido');
+            }
+            throw error;
+        }
+
         const asset = new Asset();
         asset.ID = cosechaId;
         asset.Type = 'cosecha';
         asset.Owner = this.getClientId(ctx);
         asset.Status = 'registrado';
         asset.Properties = {
-            parcelaId,
             fecha,
             variedadUva,
             cantidadKg: parseFloat(cantidadKg),
-            propiedades: JSON.parse(propiedades)
+            propiedades: JSON.parse(propiedades),
+            unidad: parseFloat(cantidadKg) >= 1000 ? 'toneladas' : 'kg'
         };
         asset.History = [{
             timestamp: new Date().toISOString(),
@@ -51,98 +74,6 @@ export class ViticultorContract extends BaseContract {
 
         const buffer = Buffer.from(JSON.stringify(asset));
         await ctx.stub.putState(cosechaId, buffer);
-        return true;
-    }
-
-    // Registrar información de la parcela
-    @Transaction()
-    @Returns('boolean')
-    public async registrarParcela(
-        ctx: Context,
-        parcelaId: string,
-        ubicacion: string,
-        superficie: string,
-        variedades: string, // JSON array con las variedades plantadas
-        propiedades: string // JSON con propiedades como tipo suelo, altitud, etc.
-    ): Promise<boolean> {
-        // Verificar permisos del viticultor
-        AccessControl.enforceViticultor(ctx);
-        
-        const exists = await this.assetExists(ctx, parcelaId);
-        if (exists) {
-            throw new Error(`La parcela ${parcelaId} ya existe`);
-        }
-
-        const asset = new Asset();
-        asset.ID = parcelaId;
-        asset.Type = 'parcela';
-        asset.Owner = this.getClientId(ctx);
-        asset.Status = 'activa';
-        asset.Properties = {
-            ubicacion: JSON.parse(ubicacion), // Coordenadas geográficas
-            superficie: parseFloat(superficie),
-            variedades: JSON.parse(variedades),
-            propiedades: JSON.parse(propiedades)
-        };
-        asset.History = [{
-            timestamp: new Date().toISOString(),
-            action: 'CREATED',
-            actor: this.getClientId(ctx)
-        }];
-
-        const buffer = Buffer.from(JSON.stringify(asset));
-        await ctx.stub.putState(parcelaId, buffer);
-        return true;
-    }
-
-    // Registrar uso de insumos en parcela
-    @Transaction()
-    @Returns('boolean')
-    public async registrarInsumo(
-        ctx: Context,
-        insumoId: string,
-        parcelaId: string,
-        tipo: string, // fertilizante, pesticida, etc.
-        nombre: string, 
-        cantidad: string,
-        fechaAplicacion: string,
-        detalles: string // JSON con detalles adicionales
-    ): Promise<boolean> {
-        // Verificar permisos del viticultor
-        AccessControl.enforceViticultor(ctx);
-        
-        const exists = await this.assetExists(ctx, insumoId);
-        if (exists) {
-            throw new Error(`El registro de insumo ${insumoId} ya existe`);
-        }
-        
-        // Verificar que la parcela existe
-        const parcelaExists = await this.assetExists(ctx, parcelaId);
-        if (!parcelaExists) {
-            throw new Error(`La parcela ${parcelaId} no existe`);
-        }
-
-        const asset = new Asset();
-        asset.ID = insumoId;
-        asset.Type = 'insumo';
-        asset.Owner = this.getClientId(ctx);
-        asset.Status = 'aplicado';
-        asset.Properties = {
-            parcelaId,
-            tipo,
-            nombre,
-            cantidad: parseFloat(cantidad),
-            fechaAplicacion,
-            detalles: JSON.parse(detalles)
-        };
-        asset.History = [{
-            timestamp: new Date().toISOString(),
-            action: 'CREATED',
-            actor: this.getClientId(ctx)
-        }];
-
-        const buffer = Buffer.from(JSON.stringify(asset));
-        await ctx.stub.putState(insumoId, buffer);
         return true;
     }
 
@@ -157,15 +88,19 @@ export class ViticultorContract extends BaseContract {
         // Verificar permisos del viticultor
         AccessControl.enforceViticultor(ctx);
         
-        // Usar la utilidad de transferencia que ya implementa todas las verificaciones
+        // Leer el activo primero para verificar que es una cosecha
+        const asset = await this.readAsset(ctx, cosechaId);
+        if (asset.Type !== 'cosecha') {
+            throw new Error(`El activo ${cosechaId} no es una cosecha`);
+        }
+        
+        // Verificar que el destinatario sea una bodega
+        if (!destinatarioId.startsWith(AccessControl.BODEGA_MSP)) {
+            throw new Error('Las cosechas solo pueden ser transferidas a bodegas');
+        }
+        
+        // Transferir el activo usando la utilidad centralizada
         try {
-            // Leer el activo primero para verificar que es una cosecha
-            const asset = await this.readAsset(ctx, cosechaId);
-            if (asset.Type !== 'cosecha') {
-                throw new Error(`El activo ${cosechaId} no es una cosecha`);
-            }
-            
-            // Transferir el activo usando la utilidad centralizada
             await TransferUtils.transferAsset(ctx, cosechaId, destinatarioId, {
                 type: 'transferencia_cosecha'
             });
@@ -174,7 +109,7 @@ export class ViticultorContract extends BaseContract {
             throw new Error(`Error al transferir cosecha: ${error.message || error}`);
         }
     }
-
+    
     // Registrar análisis de cosecha
     @Transaction()
     @Returns('boolean')
@@ -213,6 +148,55 @@ export class ViticultorContract extends BaseContract {
         const buffer = Buffer.from(JSON.stringify(cosecha));
         await ctx.stub.putState(cosechaId, buffer);
         return true;
+    }
+
+    /**
+     * Consultar las cosechas registradas por el viticultor actual
+     * Permite al viticultor ver sus propias cosechas para gestionarlas
+     */
+    @Transaction(false)
+    @Returns('string')
+    public async consultarMisCosechas(ctx: Context): Promise<string> {
+        // Verificar permisos del viticultor
+        AccessControl.enforceViticultor(ctx);
+        
+        // Obtener ID del cliente actual
+        const clientId = this.getClientId(ctx);
+        
+        // Consultar cosechas que pertenezcan al viticultor
+        const query = {
+            selector: {
+                Type: 'cosecha',
+                Owner: clientId
+            }
+        };
+        
+        const iterator = await ctx.stub.getQueryResult(JSON.stringify(query));
+        const results = await this.getAllResults(iterator);
+        
+        return JSON.stringify(results);
+    }
+    
+    // Método auxiliar para procesar resultados del iterator
+    private async getAllResults(iterator: any): Promise<any[]> {
+        const allResults = [];
+        let res = await iterator.next();
+        
+        while (!res.done) {
+            if (res.value && res.value.value.toString()) {
+                let jsonRes;
+                try {
+                    jsonRes = JSON.parse(res.value.value.toString());
+                } catch (err) {
+                    jsonRes = res.value.value.toString();
+                }
+                allResults.push(jsonRes);
+            }
+            res = await iterator.next();
+        }
+        
+        await iterator.close();
+        return allResults;
     }
 
     // La funcionalidad auxiliar ahora está en BaseContract
