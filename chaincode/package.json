@@ -4,16 +4,19 @@
   "description": "Chaincode con contratos ping y calculadora",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "start:external": "npm run build && (export CHAINCODE_SERVER_ADDRESS=0.0.0.0:9998 CHAINCODE_ID=basicts_1.0:486db954d95402cd461a20964526eb709c773f999b46ec6722cb59a2a92e674d && fabric-chaincode-node server --chaincode-address=$CHAINCODE_SERVER_ADDRESS --chaincode-id=$CHAINCODE_ID)",
-    "test": "echo \"Error: no test specified\" && exit 1"
+     "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "watch": "tsc -w",
+    "lint": "eslint . --ext .ts",
+    "test": "jest",
+    "start": "tsc && set -x && fabric-chaincode-node server --chaincode-address=$CHAINCODE_SERVER_ADDRESS --chaincode-id=$CHAINCODE_ID"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^24.0.3",
+    "ethers": "^6.14.4",
     "fabric-contract-api": "^2.5.8",
     "fabric-shim": "^2.5.8",
     "typescript": "^5.8.3"

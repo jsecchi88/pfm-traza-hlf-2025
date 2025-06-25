@@ -6,6 +6,8 @@ import { DistribuidorContract } from "./contracts/DistribuidorContract";
 import { MinoristaContract } from "./contracts/MinoristaContract";
 import { ReguladorContract } from "./contracts/ReguladorContract";
 import { ConsumidorContract } from "./contracts/ConsumidorContract";
+import { TokenizarContract } from "./contracts/TokenizarContract";
+import { UserContract } from "./contracts/UserContract";
 
 export = { contracts: [
     PingContract,
@@ -15,5 +17,7 @@ export = { contracts: [
     DistribuidorContract,
     MinoristaContract,
     ReguladorContract,
-    ConsumidorContract
+    ConsumidorContract,
+    TokenizarContract,
+    UserContract
 ]};

@@ -8,5 +8,6 @@ export class Batch {
     SourceOrg: string = ''; // Organización de origen
     TargetOrg: string = ''; // Organización de destino
     TransporterOrg: string = ''; // Transportista asignado
+    Destination: string = ''; // Para mantener compatibilidad con código existente (usar TargetOrg en su lugar)
     Properties: any = {}; // Propiedades adicionales
 }
