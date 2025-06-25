@@ -3,6 +3,13 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { ethers } from 'ethers';
 
+// Definición de tipos para window.ethereum
+declare global {
+  interface Window {
+    ethereum: any;
+  }
+}
+
 interface Web3ContextType {
   account: string | null;
   provider: ethers.BrowserProvider | null;
