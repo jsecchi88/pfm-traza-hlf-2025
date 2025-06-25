@@ -37,7 +37,6 @@ graph TD
       <td>Elabora el vino</td>
       <td>Registrar producción, análisis químicos, embotellado</td>
     </tr>
-
     <tr>
       <td><strong>Minorista</strong></td>
       <td>Punto de venta final</td>
