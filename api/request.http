@@ -68,3 +68,26 @@ GET http://localhost:5551/account/0x1d825481C63969854E1fEe2d42AE46F397349b36/mov
 
 ###
 GET http://localhost:5551/account/123456/movements
+
+### Validar firma de MetaMask (ejemplo)
+POST http://localhost:5551/validateSignature
+Content-Type: application/json
+
+{
+  "signature": "0x123abc...firma_de_ejemplo", 
+  "message": "Verificar mi identidad en PFM Traza HLF",
+  "address": "0xABC123...dirección_del_usuario"
+}
+
+### Validar firma de MetaMask (real - generado con test-signature.js)
+# Ejecuta primero node test-signature.js y copia el resultado aquí
+POST http://localhost:5551/validateSignature
+Content-Type: application/json
+
+{
+  "message": "Mensaje de prueba para verificar firma",
+  "signature": "0x...", 
+  "address": "0x..."
+}
+
+###
