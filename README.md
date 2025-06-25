@@ -11,8 +11,6 @@ graph TD
     A[Viticultor] -->|Entrega uvas| B[Bodega]
     B -->|Elabora y entrega| D[Minorista]
     D -->|Vende| E[Consumidor]
-    G[Regulador/Certificador] -.->|Verifica y certifica| B
-    G -.->|Verifica| D
     E -->|Consulta trazabilidad| D
 ```
 
@@ -46,11 +44,6 @@ graph TD
       <td>Registrar disponibilidad, confirmar trazabilidad para consumidor</td>
     </tr>
     <tr>
-      <td><strong>Regulador/Certificador</strong></td>
-      <td>Entidad oficial o consejo regulador</td>
-      <td>Verificar autenticidad, registrar certificados de calidad o DO</td>
-    </tr>
-    <tr>
       <td><strong>Consumidor (lectura)</strong></td>
       <td>Escanea QR o accede desde app móvil</td>
       <td>Solo lectura de datos trazables de una botella específica</td>
@@ -65,7 +58,7 @@ graph TD
 Esta plataforma permite:
 - Registrar digitalmente cada etapa de la cadena de suministro.
 - Garantizar la autenticidad y trazabilidad de los productos.
-- Facilitar la consulta de información por parte de consumidores y reguladores.
+- Facilitar la consulta de información por parte de los consumidores.
 - Integrar sensores IoT y datos de calidad en tiempo real.
 
 Cada actor tiene permisos específicos y todas las acciones quedan registradas de forma inmutable en la blockchain de Hyperledger Fabric.

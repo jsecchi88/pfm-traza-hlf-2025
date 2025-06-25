@@ -11,7 +11,6 @@ export class AccessControl {
     static readonly TRANSPORTISTA_MSP = 'TransportistaMSP';
     static readonly DISTRIBUIDOR_MSP = 'DistribuidorMSP';
     static readonly MINORISTA_MSP = 'MinoristaMSP';
-    static readonly REGULADOR_MSP = 'ReguladorMSP';
     
     /**
      * Verifica si el cliente es un viticultor
@@ -48,12 +47,7 @@ export class AccessControl {
         return IdentityUtils.isFromOrg(ctx, this.MINORISTA_MSP);
     }
     
-    /**
-     * Verifica si el cliente es un regulador/certificador
-     */
-    static isRegulador(ctx: Context): boolean {
-        return IdentityUtils.isFromOrg(ctx, this.REGULADOR_MSP);
-    }
+
     
     /**
      * Valida que el cliente sea un viticultor, de lo contrario lanza error
@@ -100,14 +94,7 @@ export class AccessControl {
         }
     }
     
-    /**
-     * Valida que el cliente sea un regulador, de lo contrario lanza error
-     */
-    static enforceRegulador(ctx: Context): void {
-        if (!this.isRegulador(ctx)) {
-            throw new Error('No autorizado: se requieren permisos de Regulador para esta operación');
-        }
-    }
+
     
     /**
      * Valida que el cliente sea el propietario del activo
